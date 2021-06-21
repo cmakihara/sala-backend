@@ -17,8 +17,7 @@ public class RoomService {
 	@Autowired
 	private RoomRepository roomRepository;
 
-	public List<Room> getAll() {
-		
+	public List<Room> getAll() {		
 		return roomRepository.findAll();
 	}
 	
@@ -28,14 +27,30 @@ public class RoomService {
 		return ResponseEntity.ok().body(room);
 	}
 
-	public Room saveRoom(Room room) {
-		
+	public Room saveRoom(Room room) {		
 		return roomRepository.save(room);
 	}
 	
-	public Room deleteRoom(Long id) {
-		roomRepository.deleteById(id);
+	public ResponseEntity<Room> deleteRoom(Long roomId) {
+		roomRepository.deleteById(roomId);
 		return null;
+	}
+//	public ResponseEntity<Room> deleteRoom(Long roomId) throws ResourceNotFoundException {
+//		Room room = roomRepository.findById(roomId)
+//				.orElseThrow(()-> new ResourceNotFoundException("Room not found:: " + roomId));
+//		roomRepository.deleteById(roomId);
+//		return null;
+//	}
+	
+	public Room updateRoom(Long roomId, Room room) throws ResourceNotFoundException {
+		
+		ResponseEntity<Room> newRoom = getById(room.getId());
+		return room;
+		
+	}
+	
+	public boolean existeById(Long roomId) {
+		return roomRepository.existsById(roomId);
 	}
 	
 }

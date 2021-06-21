@@ -35,8 +35,8 @@ public class RoomController {
 		return roomService.getAll();
 	}
 	
-	@GetMapping("/rooms/id")
-	public ResponseEntity<Room> getRoomById(@PathVariable Long roomId) throws ResourceNotFoundException{
+	@GetMapping("/rooms/{id}")
+	public ResponseEntity<Room> getRoomById(@PathVariable(value = "id")  Long roomId) throws ResourceNotFoundException{
 
 		return roomService.getById(roomId);
 		
@@ -44,19 +44,33 @@ public class RoomController {
 	
 	@PostMapping("/rooms")
 	public Room createRoom(@Valid @RequestBody Room room) {
-		return roomService.saveRoom(room);
+		return roomService.saveRoom(room);		
+	}
+	
+	
+	
+	@PutMapping("/rooms/{id}")
+	public ResponseEntity<Room> editar(@PathVariable(value = "id") Long roomId, @Valid @RequestBody Room room) {
+		
+		if(!roomService.existeById(roomId)) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		room.setId(roomId);
+		room = roomService.saveRoom(room);
+		
+		return ResponseEntity.ok().body(room);
 		
 	}
 	
-	@PutMapping("/rooms/{id}")
-	public Room putCategoria(@PathVariable(value = "id") Long roomId,@Valid Room room ) {
-		return roomService.saveRoom(room);
-	}
-	
 	@DeleteMapping("rooms/{id}")
-	public ResponseEntity<Room> delete(@PathVariable(value = "id") Long roomId) {
-		roomService.deleteRoom(roomId);
-		return null;
+	public ResponseEntity<Room> delete(@PathVariable(value = "id") Long roomId, Room room) throws ResourceNotFoundException {
+		
+		if(!roomService.existeById(roomId)) {
+			return ResponseEntity.notFound().build();
+		}
+				
+		return roomService.deleteRoom(roomId);
 	}
 	
 	
